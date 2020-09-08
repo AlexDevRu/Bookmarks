@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Create an account{% endblock %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'account/css/register.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">Create an account</h1>
+    <p>Please, sign up using the following form:</p>
+
+    <form action="." method="post" enctype="multipart/form-data">
+        <div class="register_flex">
+            <div>
+                {{ user_form.username.label }}
+                {{ user_form.username }}
+                {{ user_form.first_name.label }}
+                {{ user_form.first_name }}
+                {{ user_form.email.label }}
+                {{ user_form.email }}
+            </div>
+            <div>
+                {{ user_form.password.label }}
+                {{ user_form.password }}
+                {{ user_form.password2.label }}
+                {{ user_form.password2 }}
+                {{ profile_form.date_of_birth.label }}
+                {{ profile_form.date_of_birth }}
+                {{ profile_form.photo.label }}
+                {{ profile_form.photo }}
+            </div>
+        </div>
+        {% csrf_token %}
+        <input class="btn" type="submit" value="Create my account">
+    </form>
+{% endblock %}

@@ -1,0 +1,24 @@
+.flex {
+    display: flex;
+}
+
+.profile-info {
+    margin-right: 20px;
+}
+
+hr {
+    margin: 15px 0;
+    border: 2px solid #1ca188;
+}
+
+.unfollow {
+    background-color: #e74040;
+}
+
+.unfollow:hover {
+    background-color: #b03333;
+}
+
+.count {
+    margin-bottom: 10px;
+}

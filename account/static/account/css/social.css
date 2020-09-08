@@ -1,0 +1,34 @@
+.facebook_btn {
+    display: inline-block;
+    background-color: blue;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+}
+
+.facebook_btn:hover {
+    background-color: #4b4bff;
+}
+
+.twitter_btn {
+    display: inline-block;
+    background-color: #2f96c7;
+    padding: 10px 20px;
+}
+
+.twitter_btn:hover {
+    background-color: #5b99b6;
+}
+
+.social ul {
+    list-style: none;
+    margin-top: 20px;
+}
+
+.social ul li:first-child {
+
+}
+
+.social ul a {
+    color: #fff;
+    max-width: 100%;
+}

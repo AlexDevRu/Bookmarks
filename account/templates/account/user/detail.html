@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %}{{ user.get_full_name }}{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'account/css/detail.css' %}">
+    <link rel="stylesheet" href="{% static 'account/css/object_list.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% with total_followers=user.followers.count %}
+        <div class="flex">
+            <div class="profile-info">
+                {% thumbnail user.profile.photo "180x180" crop="100%" as im %}
+                    <img src="{{ im.url }}" class="user-detail">
+                {% endthumbnail %}
+            </div>
+
+            <div>
+                <h1 class="title">{{ user.get_full_name }}</h1>
+                <div class="count">
+                    <span class="total">{{ total_followers }}</span> follower{{ total_followers|pluralize }}
+                </div>
+                <a href="#" data-id="{{ user.id }}"
+                   data-action="{% if request.user in user.followers.all %}un{% endif %}follow"
+                   class="{% if request.user in user.followers.all %}un{% endif %}follow btn">
+                    {% if request.user not in user.followers.all %}
+                        Follow
+                    {% else %}
+                        Unfollow
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="object-list" class="image-container">
+            {% include "images/image/list_ajax.html" with images=user.images_created.all %}
+        </div>
+    {% endwith %}
+{% endblock %}
+
+
+{% block domready %}
+    $('a.follow, a.unfollow').click(function(e) {
+        e.preventDefault();
+        $.post('{% url "user_follow" %}',
+            { id: $(this).data('id'), action: $(this).data('action') },
+            function(data) {
+                if (data['status'] == 'ok') {
+                    var item = $('a.follow, a.unfollow');
+                    var previous_action = item.data('action');
+                    // Изменяем действие на противоположное.
+                    item.data('action', previous_action == 'follow' ? 'unfollow' : 'follow');
+                    // Изменяем текст ссылки.
+                    item.text(previous_action == 'follow' ? 'Unfollow' : 'Follow');
+                    // Обновляем количество подписчиков.
+                    var previous_followers = parseInt($('.count .total').text());
+                    $('.count .total').text(previous_action == 'follow' ? ++previous_followers : --previous_followers);
+
+                    if(item.hasClass('follow')) {
+                        item.removeClass('follow').addClass('unfollow');
+                    }
+                    else {
+                        item.removeClass('unfollow').addClass('follow');
+                    }
+                }
+            });
+    });
+{% endblock %}

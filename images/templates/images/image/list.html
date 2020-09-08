@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Images bookmarked{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'account/css/object_list.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="title center">
+        <h1>Images bookmarked</h1>
+        <a class="btn" href="{% url 'images:create' %}"><i class="fas fa-star"></i> Most Ranking</a>
+    </div>
+    <div class="object-list">
+        {% include "images/image/list_ajax.html" %}
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="{% static 'account/js/pagination_ajax.js' %}"></script>
+{% endblock %}
+{% block domready %}
+    pagination_ajax('.object-list');
+{% endblock %}

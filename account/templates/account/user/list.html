@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %}People{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'account/css/object_list.css' %}">
+    <link rel="stylesheet" href="{% static 'account/css/people.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1 class="title center">People</h1>
+    <div class="object-list">
+        {% for user in users %}
+            <div class="object">
+                <a href="{{ user.get_absolute_url }}">
+                    {% thumbnail user.profile.photo "180x180" crop="100%" as im %}
+                        <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                    <div class="object_info center">
+                        {{ user.get_full_name }}
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Images ranking{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'account/css/object_list.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1 class="title center">Images ranking</h1>
+    <div class="object-list">
+        {% include "images/image/list_ajax.html" with images=most_viewed %}
+    </div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ image.title }}{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">{{ image.title }}</h1>
+
+    {% with total_likes=image.users_like.count users_like=image.users_like.all %}
+        <div class="flex">
+            {% load thumbnail %}
+            {% thumbnail image.image "300" as im %}
+                <a href="{{ image.image.url }}">
+                    <img src="{{ im.url }}" class="image-detail">
+                </a>
+            {% endthumbnail %}
+
+            <div class="description">{{ image.description|linebreaks }}</div>
+        </div>
+        <div class="image-info">
+            <span class="count">
+                <span class="total">{{ total_likes }}</span>
+                like{{ total_likes|pluralize }} <br>
+                {{ total_views }} view{{ total_views|pluralize }}
+            </span>
+            <a href="#" data-id="{{ image.id }}"
+               data-action="{% if request.user in users_like %}un{% endif %}like"
+               class="{% if request.user in users_like %}un{% endif %}like btn">
+                {% if request.user not in users_like %}
+                    <i class="fas fa-thumbs-up"></i> Like
+                {% else %}
+                    <i class="fas fa-thumbs-down"></i> Unlike
+                {% endif %}
+            </a>
+
+            <div class="image-likes">
+                {% for user in users_like|slice:":3" %}
+                    <div data-user_id="{{ user.id }}" class="image_like_user tooltip">
+                        <img src="{{ user.profile.photo.url }}">
+                        <span class="tooltiptext">{{ user.first_name }}</span>
+                    </div>
+                {% empty %}
+                    <div class="no-likes">Nobody likes this image yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endwith %}
+
+{% endblock content %}
+
+{% block domready %}
+    $('a.like, a.unlike').click(function(e) {
+        e.preventDefault();
+        $.post(
+            '{% url 'images:like' %}',
+            {id: $(this).data('id'), action: $(this).data('action')},
+            function(data) {
+                if (data['status'] == 'ok') {
+                    var previous_action = $('a.like, a.unlike').data('action');
+
+                    // Изменяем переменную действия.
+                    $('a.like, a.unlike').data('action', previous_action == 'like' ? 'unlike' : 'like');
+
+                    // Изменяем текст ссылки.
+                    $('a.like, a.unlike').html(previous_action == 'like' ? '<i class="fas fa-thumbs-down"></i> Unlike' : '<i class="fas fa-thumbs-up"></i> Like');
+
+                    // Изменяем стиль ссылки.
+                    if($('a.like, a.unlike').hasClass('like')) {
+                        $('a.like').removeClass('like').addClass('unlike');
+                        $('.image-likes').append(
+                            `<div data-user_id="{{ request.user.id }}" class="image_like_user tooltip">
+                                <img src="{{ request.user.profile.photo.url }}">
+                                <span class="tooltiptext">{{ request.user.first_name }}</span>
+                            </div>`
+                        );
+                        $('.no-likes').remove();
+                    }
+                    else {
+                        $('a.unlike').removeClass('unlike').addClass('like');
+                        $('div[data-user_id="{{ request.user.id }}"]').remove();
+                        if($('.image-likes').html().trim() === '') {
+                            $('.image-likes').append(
+                                '<div class="no-likes">Nobody likes this image yet.</div>'
+                            );
+                        }
+                    }
+
+                    // Обновляем общее количество лайков.
+                    var previous_likes = parseInt($('span.count .total').text());
+                    $('span.count .total').text(previous_action == 'like' ? ++previous_likes : --previous_likes);
+                }
+            }
+        );
+    });
+{% endblock %}

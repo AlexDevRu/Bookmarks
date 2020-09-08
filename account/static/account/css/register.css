@@ -1,0 +1,8 @@
+.register_flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.register_flex div:first-child {
+    margin-right: 30px;
+}

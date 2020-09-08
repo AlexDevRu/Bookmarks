@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Log-in{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+          integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'account/css/social.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">Log-in</h1>
+    {% if form.errors %}
+        <p>Your username and password didn't match.Please try again.</p>
+    {% else %}
+        <p>Please, use the following form to log-in. If you don't have an account <a href="{% url 'register' %}">register here</a></p>
+    {% endif %}
+
+    <div class="login-form">
+        <form action="{% url 'login' %}" method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}" />
+            <input class="btn" type="submit" value="Log-in">
+        </form>
+
+        <p><a href="{% url 'password_reset' %}">Forgotten your password?</a></p>
+    </div>
+
+    <div class="social">
+        <ul>
+            <li class="facebook_btn">
+                <a href="{% url 'social:begin' 'facebook' %}"><i class="fab fa-facebook"></i> Sign-in with Facebook</a>
+            </li>
+            <li class="twitter_btn">
+                <a href="{% url 'social:begin' 'twitter' %}"><i class="fab fa-twitter"></i> Login with Twitter</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

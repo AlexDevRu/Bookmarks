@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Edit your account{% endblock %}
+
+{%block styles %}
+    <style>
+        .flex {
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="center">Edit your account</h1>
+    <p class="center">You can edit your account using the following form:</p>
+    <form action="." method="post" enctype="multipart/form-data">
+        <div class="flex">
+            <div>
+                {{ user_form.as_p }}
+                <input class="btn" type="submit" value="Save changes">
+            </div>
+            <div>
+                {{ profile_form.as_p }}
+            </div>
+        </div>    
+        {% csrf_token %}
+        
+    </form>
+{% endblock %}
